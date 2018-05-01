@@ -3,13 +3,13 @@
  * Plugin Name: Add to Cart Form Shortcode for WooCommerce
  * Plugin URI: https://github.com/helgatheviking/add-to-cart-form-shortcode
  * Description: Add [add_to_cart_form] shortcode that display a single product add to cart form.
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: helgatheviking
  * Author URI: https://kathyisawesome.com
  * Requires at least: 4.8
- * Tested up to: 4.9
+ * Tested up to: 4.9.5
  * WC requires at least: 3.2.0
- * WC tested up to: 3.2.6
+ * WC tested up to: 3.4.0
  *
  * @package Add to Cart Form Shortcode
  * @category Core
@@ -20,7 +20,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
+/**
+ * Use new class system for creating a shortcode via WC3.2+
+ */
+if( ! function_exists( 'kia_add_to_cart_form_shortcode_init' ) ) {
+	function kia_add_to_cart_form_shortcode_init() {
+		if( did_action( 'woocommerce_init' ) && defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '3.2.0', '>=' ) ) {
+			add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode_legacy' );
+		} else {
+			add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode' );
+		}
+	}
+	add_action( 'after_setup_theme', 'kia_add_to_cart_form_shortcode_init' );
+}
+
+if( ! function_exists( 'kia_add_to_cart_form_shortcode_legacy' ) ) {
 	/**
 	 * Add [add_to_cart_form] shortcode that display a single product add to cart form
 	 * Supports id and sku attributes [add_to_cart_form id=99] or [add_to_cart_form sku=123ABC]
@@ -30,7 +44,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 	 * @param array $atts Attributes.
 	 * @return string
 	 */
-	function kia_add_to_cart_form_shortcode( $atts ) {
+	function kia_add_to_cart_form_shortcode_legacy( $atts ) {
 			if ( empty( $atts ) ) {
 				return '';
 			}
@@ -131,5 +145,27 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			return '<div class="woocommerce">' . ob_get_clean() . '</div>';
 	}
 
-	add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode' );
+}
+
+if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
+	/**
+	 * Display a single product with content-single-product.php template.
+	 *
+	 * @param array $atts Attributes.
+	 * @return string
+	 */
+	function kia_add_to_cart_form_shortcode( $atts ) {
+		if ( empty( $atts ) ) {
+			return '';
+		}
+
+		include_once( 'class-wc-shortcode-add-to-cart-form.php' );
+
+		$atts['skus']  = isset( $atts['sku'] ) ? $atts['sku'] : '';
+		$atts['ids']   = isset( $atts['id'] ) ? $atts['id'] : '';
+		$atts['limit'] = '1';
+		$shortcode     = new WC_Shortcode_Add_To_Cart_Form( (array) $atts, 'product' );
+
+		return $shortcode->get_content();
+	}
 }
