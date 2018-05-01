@@ -155,17 +155,53 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 	 * @return string
 	 */
 	function kia_add_to_cart_form_shortcode( $atts ) {
+		global $post;
+
 		if ( empty( $atts ) ) {
 			return '';
 		}
 
-		include_once( 'class-wc-shortcode-add-to-cart-form.php' );
+		$atts = shortcode_atts( array(
+			'id'         => '',
+			'class'      => '',
+			'quantity'   => '1',
+			'sku'        => '',
+			'style'      => '',
+			'show_price' => 'true',
+		), $atts, 'product_add_to_cart' );
 
-		$atts['skus']  = isset( $atts['sku'] ) ? $atts['sku'] : '';
-		$atts['ids']   = isset( $atts['id'] ) ? $atts['id'] : '';
-		$atts['limit'] = '1';
-		$shortcode     = new WC_Shortcode_Add_To_Cart_Form( (array) $atts, 'product' );
+		if ( ! empty( $atts['id'] ) ) {
+			$product_data = get_post( $atts['id'] );
+		} elseif ( ! empty( $atts['sku'] ) ) {
+			$product_id   = wc_get_product_id_by_sku( $atts['sku'] );
+			$product_data = get_post( $product_id );
+		} else {
+			return '';
+		}
 
-		return $shortcode->get_content();
+		$product = is_object( $product_data ) && in_array( $product_data->post_type, array( 'product', 'product_variation' ), true ) ? wc_setup_product_data( $product_data ) : false;
+
+		if ( ! $product ) {
+			return '';
+		}
+
+		ob_start();
+
+		echo '<div class="product woocommerce add_to_cart_form_shortcode ' . esc_attr( $atts['class'] ) . '" style="' . ( empty( $atts['style'] ) ? '' : esc_attr( $atts['style'] ) ) . '">';
+
+		if ( wc_string_to_bool( $atts['show_price'] ) ) {
+			// @codingStandardsIgnoreStart
+			echo $product->get_price_html();
+			// @codingStandardsIgnoreEnd
+		}
+
+		woocommerce_template_single_add_to_cart();
+
+		echo '</div>';
+
+		// Restore Product global in case this is shown inside a product post.
+		wc_setup_product_data( $post );
+
+		return ob_get_clean();
 	}
 }
