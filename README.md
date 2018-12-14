@@ -20,6 +20,19 @@ or product SKU:
 
 `[add_to_cart sku="GUACAMOLE99"]`
 
+## Additional Parameters
+
+### redirect
+
+By default, the add to cart form will redirect to the product's URL. To avoid this and use the "none" value to disable redirect, in effect, redirecting to the same page you are currently on.
+
+`[add_to_cart_form id="99" redirect="none"]`
+
+### hide_quantity
+
+The quantity buttons can look a little weird when displayed outside the product page. You can hide them, by setting the parameter to "true". Effectively, this sets the quantity to 1.
+`[add_to_cart_form id="99" hide_quantity="true"]`
+
 ## Screenshot
 
 Here's an example of the shortcode used on a simple Name Your Price product
