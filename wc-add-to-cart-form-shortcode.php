@@ -31,8 +31,8 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode_init' ) ) {
 			add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode' );
 		}
 	}
-	add_action( 'after_setup_theme', 'kia_add_to_cart_form_shortcode_init' );
 }
+add_action( 'after_setup_theme', 'kia_add_to_cart_form_shortcode_init' );
 
 if( ! function_exists( 'kia_add_to_cart_form_shortcode_legacy' ) ) {
 	/**
