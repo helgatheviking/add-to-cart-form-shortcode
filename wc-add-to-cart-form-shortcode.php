@@ -171,6 +171,8 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			'sku'        => '',
 			'style'      => '',
 			'show_price' => 'true',
+			'redirect'	 => 'default',
+			'hide_quantity' => 'false'
 		), $atts, 'product_add_to_cart' );
 
 		if ( ! empty( $atts['id'] ) ) {
@@ -198,13 +200,48 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			// @codingStandardsIgnoreEnd
 		}
 
+		if( $atts['redirect'] == 'none' ) {
+			add_filter( 'woocommerce_add_to_cart_form_action', 'kia_add_to_cart_form_redirect' );
+		}
+		
+		if( $atts['hide_quantity'] == 'true' ) {
+			add_filter( 'woocommerce_quantity_input_min', 'kia_add_to_cart_form_return_one' );
+			add_filter( 'woocommerce_quantity_input_max', 'kia_add_to_cart_form_return_one' );
+		}
+		
 		woocommerce_template_single_add_to_cart();
-
+		
+		remove_filter( 'woocommerce_add_to_cart_form_action', 'kia_add_to_cart_form_redirect' );
+	
 		echo '</div>';
 
 		// Restore Product global in case this is shown inside a product post.
 		wc_setup_product_data( $post );
 
 		return ob_get_clean();
+	}
+}
+
+if( ! function_exists( 'kia_add_to_cart_form_redirect' ) ) {
+	/**
+	 * Redirect to same page
+	 *
+	 * @return string
+	 */
+	function kia_add_to_cart_form_redirect( $url ) {
+		return get_permalink();
+	}
+}
+
+
+
+if( ! function_exists( 'kia_add_to_cart_form_return_one' ) ) {
+	/**
+	 * Return integer
+	 *
+	 * @return int
+	 */
+	function kia_add_to_cart_form_return_one() {
+		return 1;
 	}
 }
