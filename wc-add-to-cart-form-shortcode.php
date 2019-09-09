@@ -190,7 +190,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 
 		ob_start();
 
-		echo '<div class="product woocommerce add_to_cart_form_shortcode ' . esc_attr( $atts['class'] ) . '" style="' . ( empty( $atts['style'] ) ? '' : esc_attr( $atts['style'] ) ) . '">';
+		echo '<div class="single-product woocommerce add_to_cart_form_shortcode ' . esc_attr( $atts['class'] ) . '" style="' . ( empty( $atts['style'] ) ? '' : esc_attr( $atts['style'] ) ) . '">';
 
 		if ( wc_string_to_bool( $atts['show_price'] ) ) {
 			// @codingStandardsIgnoreStart
