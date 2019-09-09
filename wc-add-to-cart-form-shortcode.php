@@ -3,13 +3,13 @@
  * Plugin Name: Add to Cart Form Shortcode for WooCommerce
  * Plugin URI: https://github.com/helgatheviking/add-to-cart-form-shortcode
  * Description: Add [add_to_cart_form] shortcode that display a single product add to cart form.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Author: helgatheviking
  * Author URI: https://kathyisawesome.com
  * Requires at least: 4.8
- * Tested up to: 4.9.5
+ * Tested up to: 5.2.0
  * WC requires at least: 3.2.0
- * WC tested up to: 3.4.0
+ * WC tested up to: 3.7.0
  *
  * @package Add to Cart Form Shortcode
  * @category Core
