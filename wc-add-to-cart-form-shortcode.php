@@ -24,12 +24,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Use new class system for creating a shortcode via WC3.2+
  */
 if( ! function_exists( 'kia_add_to_cart_form_shortcode_init' ) ) {
-			add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode_legacy' );
-		} else {
-			add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode' );
 	function kia_add_to_cart_form_shortcode_init() { 
 
 		if( did_action( 'woocommerce_loaded' ) ) {
+			if( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '3.2.0', '>=' ) ) {
+				add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode' );
+			} else {
+				add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode_legacy' ); 
+			}
 		}
 	}
 }
