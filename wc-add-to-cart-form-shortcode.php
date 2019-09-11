@@ -3,7 +3,7 @@
  * Plugin Name: Add to Cart Form Shortcode for WooCommerce
  * Plugin URI: https://github.com/helgatheviking/add-to-cart-form-shortcode
  * Description: Add [add_to_cart_form] shortcode that display a single product add to cart form.
- * Version: 2.1.0
+ * Version: 3.0.0
  * Author: helgatheviking
  * Author URI: https://kathyisawesome.com
  * Requires at least: 4.8
@@ -20,207 +20,147 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-/**
- * Use new class system for creating a shortcode via WC3.2+
- */
-if( ! function_exists( 'kia_add_to_cart_form_shortcode_init' ) ) {
-	function kia_add_to_cart_form_shortcode_init() { 
-
-		if( did_action( 'woocommerce_loaded' ) ) {
-			if( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '3.2.0', '>=' ) ) {
-				add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode' );
-			} else {
-				add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode_legacy' ); 
-			}
-		}
-	}
-}
-add_action( 'after_setup_theme', 'kia_add_to_cart_form_shortcode_init' );
-
-if( ! function_exists( 'kia_add_to_cart_form_shortcode_legacy' ) ) {
-	/**
-	 * Add [add_to_cart_form] shortcode that display a single product add to cart form
-	 * Supports id and sku attributes [add_to_cart_form id=99] or [add_to_cart_form sku=123ABC]
-	 * Essentially a duplicate of the [product_page]
-	 * but replacing wc_get_template_part( 'content', 'single-product' ); with woocommerce_template_single_add_to_cart()
-	 *
-	 * @param array $atts Attributes.
-	 * @return string
-	 */
-	function kia_add_to_cart_form_shortcode_legacy( $atts ) {
-			if ( empty( $atts ) ) {
-				return '';
-			}
-
-			if ( ! isset( $atts['id'] ) && ! isset( $atts['sku'] ) ) {
-				return '';
-			}
-
-			$args = array(
-				'posts_per_page'      => 1,
-				'post_type'           => 'product',
-				'post_status'         => 'publish',
-				'ignore_sticky_posts' => 1,
-				'no_found_rows'       => 1,
-			);
-
-			if ( isset( $atts['sku'] ) ) {
-				$args['meta_query'][] = array(
-					'key'     => '_sku',
-					'value'   => sanitize_text_field( $atts['sku'] ),
-					'compare' => '=',
-				);
-
-				$args['post_type'] = array( 'product', 'product_variation' );
-			}
-
-			if ( isset( $atts['id'] ) ) {
-				$args['p'] = absint( $atts['id'] );
-			}
-
-			$single_product = new WP_Query( $args );
-
-			$preselected_id = '0';
-
-			// Check if sku is a variation.
-			if ( isset( $atts['sku'] ) && $single_product->have_posts() && 'product_variation' === $single_product->post->post_type ) {
-
-				$variation = new WC_Product_Variation( $single_product->post->ID );
-				$attributes = $variation->get_attributes();
-
-				// Set preselected id to be used by JS to provide context.
-				$preselected_id = $single_product->post->ID;
-
-				// Get the parent product object.
-				$args = array(
-					'posts_per_page'      => 1,
-					'post_type'           => 'product',
-					'post_status'         => 'publish',
-					'ignore_sticky_posts' => 1,
-					'no_found_rows'       => 1,
-					'p'                   => $single_product->post->post_parent,
-				);
-
-				$single_product = new WP_Query( $args );
-			?>
-				<script type="text/javascript">
-					jQuery( document ).ready( function( $ ) {
-						var $variations_form = $( '[data-product-page-preselected-id="<?php echo esc_attr( $preselected_id ); ?>"]' ).find( 'form.variations_form' );
-
-						<?php foreach ( $attributes as $attr => $value ) { ?>
-							$variations_form.find( 'select[name="<?php echo esc_attr( $attr ); ?>"]' ).val( '<?php echo esc_js( $value ); ?>' );
-						<?php } ?>
-					});
-				</script>
-			<?php
-			}
-
-			// For "is_single" to always make load comments_template() for reviews.
-			$single_product->is_single = true;
-
-			ob_start();
-
-			global $wp_query;
-
-			// Backup query object so following loops think this is a product page.
-			$previous_wp_query = $wp_query;
-			// @codingStandardsIgnoreStart
-			$wp_query          = $single_product;
-			// @codingStandardsIgnoreEnd
-
-			wp_enqueue_script( 'wc-single-product' );
-
-			while ( $single_product->have_posts() ) {
-				$single_product->the_post()
-				?>
-				<div class="single-product" data-product-page-preselected-id="<?php echo esc_attr( $preselected_id ); ?>">
-					<?php woocommerce_template_single_add_to_cart(); ?>
-				</div>
-				<?php
-			}
-
-			// Restore $previous_wp_query and reset post data.
-			// @codingStandardsIgnoreStart
-			$wp_query = $previous_wp_query;
-			// @codingStandardsIgnoreEnd
-			wp_reset_postdata();
-
-			return '<div class="woocommerce">' . ob_get_clean() . '</div>';
-	}
-
-}
 
 if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 	/**
-	 * Display a single product with content-single-product.php template.
+	 * Display a single product with single-product/add-to-cart/$product_type.php template.
 	 *
 	 * @param array $atts Attributes.
 	 * @return string
 	 */
 	function kia_add_to_cart_form_shortcode( $atts ) {
-		global $post;
 
 		if ( empty( $atts ) ) {
 			return '';
 		}
 
+		if ( ! isset( $atts['id'] ) && ! isset( $atts['sku'] ) ) {
+			return '';
+		}
+
 		$atts = shortcode_atts( array(
-			'id'         => '',
-			'class'      => '',
-			'quantity'   => '1',
-			'sku'        => '',
-			'style'      => '',
-			'show_price' => 'true',
-			'redirect'	 => 'default',
-			'hide_quantity' => 'false'
-		), $atts, 'product_add_to_cart' );
+			'id'				  => '',
+			'sku'				  => '',
+			'status'			  => 'publish',
+			'show_price'		  => 'true',
+			'hide_quantity'		  => 'false'
+		), $atts, 'product_add_to_cart_form' );
 
-		if ( ! empty( $atts['id'] ) ) {
-			$product_data = get_post( $atts['id'] );
-		} elseif ( ! empty( $atts['sku'] ) ) {
-			$product_id   = wc_get_product_id_by_sku( $atts['sku'] );
-			$product_data = get_post( $product_id );
-		} else {
-			return '';
+		$query_args = array(
+			'posts_per_page'      => 1,
+			'post_type'           => 'product',
+			'post_status'         => $atts['status'],
+			'ignore_sticky_posts' => 1,
+			'no_found_rows'       => 1
+		);
+
+		if ( isset( $atts['sku'] ) ) {
+			$query_args['meta_query'][] = array(
+				'key'     => '_sku',
+				'value'   => sanitize_text_field( $atts['sku'] ),
+				'compare' => '=',
+			);
+
+			$query_args['post_type'] = array( 'product', 'product_variation' );
 		}
 
-		$product = is_object( $product_data ) && in_array( $product_data->post_type, array( 'product', 'product_variation' ), true ) ? wc_setup_product_data( $product_data ) : false;
-
-		if ( ! $product ) {
-			return '';
+		if ( isset( $atts['id'] ) ) {
+			$query_args['p'] = absint( $atts['id'] );
 		}
 
-		ob_start();
-
-		echo '<div class="single-product woocommerce add_to_cart_form_shortcode ' . esc_attr( $atts['class'] ) . '" style="' . ( empty( $atts['style'] ) ? '' : esc_attr( $atts['style'] ) ) . '">';
-
-		if ( wc_string_to_bool( $atts['show_price'] ) ) {
-			// @codingStandardsIgnoreStart
-			echo $product->get_price_html();
-			// @codingStandardsIgnoreEnd
-		}
-
-		if( $atts['redirect'] == 'none' ) {
-			add_filter( 'woocommerce_add_to_cart_form_action', 'kia_add_to_cart_form_redirect' );
-		}
-		
+		// Hide quantity input if desired.		
 		if( $atts['hide_quantity'] == 'true' ) {
 			add_filter( 'woocommerce_quantity_input_min', 'kia_add_to_cart_form_return_one' );
 			add_filter( 'woocommerce_quantity_input_max', 'kia_add_to_cart_form_return_one' );
 		}
-		
-		woocommerce_template_single_add_to_cart();
-		
-		remove_filter( 'woocommerce_add_to_cart_form_action', 'kia_add_to_cart_form_redirect' );
-	
-		echo '</div>';
 
-		// Restore Product global in case this is shown inside a product post.
-		wc_setup_product_data( $post );
+		// Change form action to avoid redirect.
+		add_filter( 'woocommerce_add_to_cart_form_action', '__return_empty_string' );
 
-		return ob_get_clean();
+		$single_product = new WP_Query( $query_args );
+
+		$preselected_id = '0';
+
+		// Check if sku is a variation.
+		if ( isset( $atts['sku'] ) && $single_product->have_posts() && 'product_variation' === $single_product->post->post_type ) {
+
+			$variation  = new WC_Product_Variation( $single_product->post->ID );
+			$attributes = $variation->get_attributes();
+
+			// Set preselected id to be used by JS to provide context.
+			$preselected_id = $single_product->post->ID;
+
+			// Get the parent product object.
+			$query_args = array(
+				'posts_per_page'      => 1,
+				'post_type'           => 'product',
+				'post_status'         => 'publish',
+				'ignore_sticky_posts' => 1,
+				'no_found_rows'       => 1,
+				'p'                   => $single_product->post->post_parent,
+			);
+
+			$single_product = new WP_Query( $query_args );
+		?>
+			<script type="text/javascript">
+				jQuery( document ).ready( function( $ ) {
+					var $variations_form = $( '[data-product-page-preselected-id="<?php echo esc_attr( $preselected_id ); ?>"]' ).find( 'form.variations_form' );
+
+					<?php foreach ( $attributes as $attr => $value ) { ?>
+						$variations_form.find( 'select[name="<?php echo esc_attr( $attr ); ?>"]' ).val( '<?php echo esc_js( $value ); ?>' );
+					<?php } ?>
+				});
+			</script>
+		<?php
+		}
+
+		// For "is_single" to always make load comments_template() for reviews.
+		$single_product->is_single = true;
+
+		ob_start();
+
+		global $wp_query;
+
+		// Backup query object so following loops think this is a product page.
+		$previous_wp_query = $wp_query;
+		// @codingStandardsIgnoreStart
+		$wp_query          = $single_product;
+		// @codingStandardsIgnoreEnd
+
+		wp_enqueue_script( 'wc-single-product' );
+
+		while ( $single_product->have_posts() ) {
+			$single_product->the_post();
+
+			?>
+			<div class="single-product add_to_cart_form_shortcode" data-product-page-preselected-id="<?php echo esc_attr( $preselected_id ); ?>">
+
+				<?php 
+				if ( wc_string_to_bool( $atts['show_price'] ) ) {
+					woocommerce_template_single_price();
+				}
+				?>
+
+				<?php woocommerce_template_single_add_to_cart() ?>
+			</div>
+			<?php
+		}
+
+		// Restore $previous_wp_query and reset post data.
+		// @codingStandardsIgnoreStart
+		$wp_query = $previous_wp_query;
+		// @codingStandardsIgnoreEnd
+		wp_reset_postdata();
+
+		// Remove filters.
+		remove_filter( 'woocommerce_add_to_cart_form_action', '__return_empty_string' );
+		remove_filter( 'woocommerce_quantity_input_min', 'kia_add_to_cart_form_return_one' );
+		remove_filter( 'woocommerce_quantity_input_max', 'kia_add_to_cart_form_return_one' );
+
+		return '<div class="woocommerce">' . ob_get_clean() . '</div>';
 	}
 }
+add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode' );
 
 if( ! function_exists( 'kia_add_to_cart_form_redirect' ) ) {
 	/**
