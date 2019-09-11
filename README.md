@@ -22,11 +22,11 @@ or product SKU:
 
 ## Additional Parameters
 
-### redirect
+### show_price
 
-By default, the add to cart form will redirect to the product's URL. To avoid this and use the "none" value to disable redirect, in effect, redirecting to the same page you are currently on.
+By default, the price template will be displayed just prior to the add to cart template. You can hide it by setting the parameter to "false".
 
-`[add_to_cart_form id="99" redirect="none"]`
+`[add_to_cart_form id="99" show_price="false"]`
 
 ### hide_quantity
 
