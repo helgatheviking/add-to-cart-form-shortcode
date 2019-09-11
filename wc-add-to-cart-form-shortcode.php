@@ -54,7 +54,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			'no_found_rows'       => 1
 		);
 
-		if ( isset( $atts['sku'] ) ) {
+		if ( ! empty( $atts['sku'] ) ) {
 			$query_args['meta_query'][] = array(
 				'key'     => '_sku',
 				'value'   => sanitize_text_field( $atts['sku'] ),
@@ -64,7 +64,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			$query_args['post_type'] = array( 'product', 'product_variation' );
 		}
 
-		if ( isset( $atts['id'] ) ) {
+		if ( ! empty( $atts['id'] ) ) {
 			$query_args['p'] = absint( $atts['id'] );
 		}
 
@@ -82,7 +82,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 		$preselected_id = '0';
 
 		// Check if sku is a variation.
-		if ( isset( $atts['sku'] ) && $single_product->have_posts() && 'product_variation' === $single_product->post->post_type ) {
+		if ( ! empty( $atts['sku'] ) && $single_product->have_posts() && 'product_variation' === $single_product->post->post_type ) {
 
 			$variation  = new WC_Product_Variation( $single_product->post->ID );
 			$attributes = $variation->get_attributes();
