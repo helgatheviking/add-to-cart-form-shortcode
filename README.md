@@ -20,6 +20,10 @@ or product SKU:
 
 `[add_to_cart sku="GUACAMOLE99"]`
 
+To use in a template you would use:
+
+`echo do_shortcode( '[add_to_cart id="99"]' );`
+
 ## Additional Parameters
 
 ### show_price
