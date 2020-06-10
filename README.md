@@ -18,11 +18,11 @@ Like any other shortcode you can paste it into your page/post content. Or use it
 
 or product SKU:
 
-`[add_to_cart sku="GUACAMOLE99"]`
+`[add_to_cart_form sku="GUACAMOLE99"]`
 
 To use in a template you would use:
 
-`echo do_shortcode( '[add_to_cart id="99"]' );`
+`echo do_shortcode( '[add_to_cart_form id="99"]' );`
 
 ## Additional Parameters
 
