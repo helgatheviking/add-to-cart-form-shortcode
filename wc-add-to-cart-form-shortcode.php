@@ -133,7 +133,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			$single_product->the_post();
 
 			?>
-			<div class="single-product add_to_cart_form_shortcode" data-product-page-preselected-id="<?php echo esc_attr( $preselected_id ); ?>">
+			<div class="product single-product add_to_cart_form_shortcode" data-product-page-preselected-id="<?php echo esc_attr( $preselected_id ); ?>">
 
 				<?php 
 				if ( wc_string_to_bool( $atts['show_price'] ) ) {
