@@ -59,7 +59,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			$query_args['meta_query'][] = array(
 				'key'     => '_sku',
 				'value'   => sanitize_text_field( $atts['sku'] ),
-				'compare' => '=',
+			    'compare' => '=',
 			);
 
 			$query_args['post_type'] = array( 'product', 'product_variation' );
