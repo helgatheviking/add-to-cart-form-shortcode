@@ -43,7 +43,8 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			'sku'				  => '',
 			'status'			  => 'publish',
 			'show_price'		  => 'true',
-			'hide_quantity'		  => 'false'
+			'hide_quantity'		  => 'false',
+		    'redirect_to_cart'    => 'false'
 		), $atts, 'product_add_to_cart_form' );
 
 		$query_args = array(
@@ -68,14 +69,16 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			$query_args['p'] = absint( $atts['id'] );
 		}
 
-		// Hide quantity input if desired.		
+		// Hide quantity input if desired.
 		if( $atts['hide_quantity'] == 'true' ) {
 			add_filter( 'woocommerce_quantity_input_min', 'kia_add_to_cart_form_return_one' );
 			add_filter( 'woocommerce_quantity_input_max', 'kia_add_to_cart_form_return_one' );
 		}
 
-		// Change form action to avoid redirect.
-		add_filter( 'woocommerce_add_to_cart_form_action', '__return_empty_string' );
+		// Change form action to avoid redirect, except if redirect_to_cart is true.
+	    if ($atts['redirect_to_cart'] !== 'true') {
+	        add_filter( 'woocommerce_add_to_cart_redirect', '__return_empty_string' );
+	    }
 
 		$single_product = new WP_Query( $query_args );
 
@@ -135,7 +138,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			?>
 			<div class="product single-product add_to_cart_form_shortcode" data-product-page-preselected-id="<?php echo esc_attr( $preselected_id ); ?>">
 
-				<?php 
+				<?php
 				if ( wc_string_to_bool( $atts['show_price'] ) ) {
 					woocommerce_template_single_price();
 				}
