@@ -44,7 +44,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			'status'			  => 'publish',
 			'show_price'		  => 'true',
 			'hide_quantity'		  => 'false',
-		    'redirect_to_cart'    => 'false'
+			'redirect_to_cart'	  => 'false'
 		), $atts, 'product_add_to_cart_form' );
 
 		$query_args = array(
@@ -59,7 +59,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			$query_args['meta_query'][] = array(
 				'key'     => '_sku',
 				'value'   => sanitize_text_field( $atts['sku'] ),
-			    'compare' => '=',
+				'compare' => '=',
 			);
 
 			$query_args['post_type'] = array( 'product', 'product_variation' );
@@ -76,9 +76,9 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 		}
 
 		// Change form action to avoid redirect, except if redirect_to_cart is true.
-	    if ($atts['redirect_to_cart'] !== 'true') {
-	        add_filter( 'woocommerce_add_to_cart_redirect', '__return_empty_string' );
-	    }
+		if ($atts['redirect_to_cart'] !== 'true') {
+			add_filter( 'woocommerce_add_to_cart_redirect', '__return_empty_string' );
+		}
 
 		$single_product = new WP_Query( $query_args );
 
