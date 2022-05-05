@@ -73,7 +73,7 @@ if(!function_exists('kia_add_to_cart_form_shortcode')) {
 			add_filter('woocommerce_quantity_input_max', 'kia_add_to_cart_form_return_one');
 		}
 
-		// Change form action to avoid redirect, except if redirect_to_cart is true.
+		// By default, this redirects (to cart or whatever you or any plugin set) , but you can prevent it by setting the parameter to "false".
 		if($atts['allow_redirect'] !== 'false') {
 			add_filter('woocommerce_add_to_cart_redirect', '__return_empty_string');
 		}
