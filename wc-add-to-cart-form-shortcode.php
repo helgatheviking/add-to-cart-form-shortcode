@@ -10,10 +10,10 @@
  * Tested up to: 5.9.0
  * WC requires at least: 3.2.0
  * WC tested up to: 6.5.0
+ * License: GNU General Public License v3.0
+ * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
- * @package Add to Cart Form Shortcode
- * @category Core
- * @author helgatheviking
+ * @package Add to Cart Form Shortcode for WooCommerce
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 
-if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
+if ( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 	/**
 	 * Display a single product with single-product/add-to-cart/$product_type.php template.
 	 *
@@ -38,20 +38,24 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			return '';
 		}
 
-		$atts = shortcode_atts( array(
-			'id'				  => '',
-			'sku'				  => '',
-			'status'			  => 'publish',
-			'show_price'		  => 'true',
-			'hide_quantity'		  => 'false'
-		), $atts, 'product_add_to_cart_form' );
+		$atts = shortcode_atts(
+			array(
+				'id'            => '',
+				'sku'           => '',
+				'status'        => 'publish',
+				'show_price'    => 'true',
+				'hide_quantity' => 'false',
+			),
+			$atts,
+			'product_add_to_cart_form'
+		);
 
 		$query_args = array(
 			'posts_per_page'      => 1,
 			'post_type'           => 'product',
 			'post_status'         => $atts['status'],
 			'ignore_sticky_posts' => 1,
-			'no_found_rows'       => 1
+			'no_found_rows'       => 1,
 		);
 
 		if ( ! empty( $atts['sku'] ) ) {
@@ -68,8 +72,8 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			$query_args['p'] = absint( $atts['id'] );
 		}
 
-		// Hide quantity input if desired.		
-		if( $atts['hide_quantity'] == 'true' ) {
+		// Hide quantity input if desired.
+		if ( 'true' === $atts['hide_quantity'] ) {
 			add_filter( 'woocommerce_quantity_input_min', 'kia_add_to_cart_form_return_one' );
 			add_filter( 'woocommerce_quantity_input_max', 'kia_add_to_cart_form_return_one' );
 		}
@@ -101,7 +105,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			);
 
 			$single_product = new WP_Query( $query_args );
-		?>
+			?>
 			<script type="text/javascript">
 				jQuery( document ).ready( function( $ ) {
 					var $variations_form = $( '[data-product-page-preselected-id="<?php echo esc_attr( $preselected_id ); ?>"]' ).find( 'form.variations_form' );
@@ -111,7 +115,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 					<?php } ?>
 				});
 			</script>
-		<?php
+			<?php
 		}
 
 		// For "is_single" to always make load comments_template() for reviews.
@@ -135,13 +139,13 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 			?>
 			<div class="product single-product add_to_cart_form_shortcode" data-product-page-preselected-id="<?php echo esc_attr( $preselected_id ); ?>">
 
-				<?php 
+				<?php
 				if ( wc_string_to_bool( $atts['show_price'] ) ) {
 					woocommerce_template_single_price();
 				}
 				?>
 
-				<?php woocommerce_template_single_add_to_cart() ?>
+				<?php woocommerce_template_single_add_to_cart(); ?>
 			</div>
 			<?php
 		}
@@ -162,7 +166,7 @@ if( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 }
 add_shortcode( 'add_to_cart_form', 'kia_add_to_cart_form_shortcode' );
 
-if( ! function_exists( 'kia_add_to_cart_form_redirect' ) ) {
+if ( ! function_exists( 'kia_add_to_cart_form_redirect' ) ) {
 	/**
 	 * Redirect to same page
 	 *
@@ -175,7 +179,7 @@ if( ! function_exists( 'kia_add_to_cart_form_redirect' ) ) {
 
 
 
-if( ! function_exists( 'kia_add_to_cart_form_return_one' ) ) {
+if ( ! function_exists( 'kia_add_to_cart_form_return_one' ) ) {
 	/**
 	 * Return integer
 	 *

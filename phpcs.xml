@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset name="KathyIsAwesome-CS">
+	<description>Kathy is Awesome Coding Standard</description>
+	
+    <!-- Configs -->
+	<config name="minimum_supported_wp_version" value="5.0" />
+	<config name="testVersion" value="5.9-" />
+
+	<rule ref="PHPCompatibility">
+		<exclude-pattern>vendor/</exclude-pattern>
+	</rule>
+</ruleset>

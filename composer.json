@@ -1,0 +1,27 @@
+{
+  "name": "helgatheviking/add-to-cart-form-shortcode",
+  "description": "Add [add_to_cart_form] shortcode that display a single WooCommerce product's add to cart form.",
+  "homepage": "https://github.com/helgatheviking/add-to-cart-form-shortcode/",
+  "type": "wordpress-plugin",
+  "license": "GPL-3.0-or-later",
+  "require-dev": {
+    "woocommerce/woocommerce-sniffs": "0.1.3"
+  },
+  "scripts": {
+    "phpcs": [
+        "phpcs . -s -p -n"
+    ],
+    "phpcs-pre-commit": [
+      "phpcs . -s -p -n"
+    ],
+    "phpcb": [
+        "phpcbf . "
+    ]
+  },
+  "extra": {
+    "scripts-description": {
+          "phpcs": "Analyze code against the WordPress coding standards with PHP_CodeSniffer",
+          "phpcb": "Fix coding standards warnings/errors automatically with PHP Code Beautifier"
+    }
+  }
+}
