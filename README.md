@@ -43,6 +43,5 @@ Here's an example of the shortcode used on a simple Name Your Price product
 
 ![Add to cart form, displays Name Your Price text input](https://user-images.githubusercontent.com/507025/35475356-b88013fa-0362-11e8-8659-e7a9168065cf.png)
 
-
-
-
+## Download
+[Download latest release](https://github.com/helgatheviking/add-to-cart-form-shortcode/releases/latest/download/add-to-cart-form-shortcode.zip)

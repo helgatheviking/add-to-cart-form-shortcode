@@ -1,0 +1,28 @@
+{
+  "title": "Add to Cart Form Shortcode for WooCommerce",
+  "name": "wc-add-to-cart-form-shortcode",
+  "version": "3.0.1",
+  "description": "Add [add_to_cart_form] shortcode that display a single WooCommerce product's add to cart form.",
+  "main": "Gruntfile.js",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/helgatheviking/add-to-cart-form-shortcode"
+  },
+  "bugs": {
+    "url": "https://github.com/helgatheviking/add-to-cart-form-shortcode/issues"
+  },
+  "author": "helgatheviking",
+  "devDependencies": {
+    "grunt": "~1.5.2",
+    "grunt-contrib-clean": "^2.0.1",
+    "grunt-contrib-compress": "^2.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-text-replace": "^0.4.0",
+    "grunt-wp-i18n": "~1.0.3",
+    "load-grunt-tasks": "~5.1.0"
+  },
+  "scripts": {
+    "release": "grunt release"
+  }
+}

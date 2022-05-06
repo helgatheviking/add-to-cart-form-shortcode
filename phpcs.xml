@@ -7,6 +7,8 @@
 	<config name="testVersion" value="5.9-" />
 
 	<rule ref="PHPCompatibility">
+		<exclude-pattern>build/</exclude-pattern>
+		<exclude-pattern>deploy/</exclude-pattern>
 		<exclude-pattern>vendor/</exclude-pattern>
 	</rule>
 </ruleset>
