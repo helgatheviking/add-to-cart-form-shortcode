@@ -75,7 +75,7 @@ if(!function_exists('kia_add_to_cart_form_shortcode')) {
 
 		// By default, this redirects (to cart or whatever you or any plugin set) , but you can prevent it by setting the parameter to "false".
 		if($atts['allow_redirect'] !== 'false') {
-			add_filter('woocommerce_add_to_cart_redirect', '__return_empty_string');
+			add_filter('woocommerce_add_to_cart_form_action', '__return_empty_string');
 		}
 
 		$single_product = new WP_Query($query_args);
