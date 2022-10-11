@@ -23,6 +23,8 @@
     "load-grunt-tasks": "~5.1.0"
   },
   "scripts": {
-    "release": "grunt release"
+    "build": "grunt build",
+    "dev": "grunt dev",
+    "release": "grunt release",
   }
 }
