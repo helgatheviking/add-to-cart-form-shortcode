@@ -49,3 +49,6 @@ Here's an example of the shortcode used on a simple Name Your Price product
 
 ## Download
 [Download latest release](https://github.com/helgatheviking/add-to-cart-form-shortcode/releases/latest/download/add-to-cart-form-shortcode.zip)
+
+## Donations
+If you find this plugin helpful, please consider donating to the [USA Women's National Handball Team](https://chuffed.org/fundraiser/pagq2023-kathy).
