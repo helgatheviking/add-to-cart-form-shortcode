@@ -160,9 +160,10 @@ if ( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 		wp_reset_postdata();
 
 		// Remove filters.
-		remove_filter( 'woocommerce_add_to_cart_form_action', '__return_empty_string' );
-		remove_filter( 'woocommerce_quantity_input_min', 'kia_add_to_cart_form_return_one' );
-		remove_filter( 'woocommerce_quantity_input_max', 'kia_add_to_cart_form_return_one' );
+		if ( 'true' === $atts['hide_quantity'] ) {
+			remove_filter( 'woocommerce_quantity_input_min', 'kia_add_to_cart_form_return_one' );
+			remove_filter( 'woocommerce_quantity_input_max', 'kia_add_to_cart_form_return_one' );
+		}
 
 		if ( 'false' === $atts[ 'allow_form_action' ] ) {
 			remove_filter( 'woocommerce_add_to_cart_form_action', '__return_empty_string' );
