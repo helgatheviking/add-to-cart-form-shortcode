@@ -37,6 +37,10 @@ By default, the price template will be displayed just prior to the add to cart t
 The quantity buttons can look a little weird when displayed outside the product page. You can hide them, by setting the parameter to "true". Effectively, this sets the quantity to 1.
 `[add_to_cart_form id="99" hide_quantity="true"]`
 
+### allow_form_action
+
+This form action is disabled by default so the page will refresh in place instead of redirecting to the single product page. However, the form action is filterable and so some users may wish to allow the page to redirect (for example, directly to the cart). To enable the form action, you can use `[add_to_cart_form id="99" allow_form_action="true"]`
+
 ## Screenshot
 
 Here's an example of the shortcode used on a simple Name Your Price product
