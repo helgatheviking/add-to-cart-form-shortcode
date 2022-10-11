@@ -63,9 +63,9 @@ jobs:
           php --version
           composer --version
 
-      - name: "Install Composer dependencies with development dependencies."
+      - name: "Install Composer dependencies without development dependencies."
         run: |
-          composer install --no-interaction --prefer-dist --no-scripts
+          composer install --no-dev --no-interaction --prefer-dist --no-scripts
 
       - name: "Setup NodeJS."
         uses: actions/setup-node@v2
