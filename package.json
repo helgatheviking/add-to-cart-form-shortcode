@@ -25,6 +25,6 @@
   "scripts": {
     "build": "grunt build",
     "dev": "grunt dev",
-    "release": "grunt release",
+    "release": "grunt release"
   }
 }
