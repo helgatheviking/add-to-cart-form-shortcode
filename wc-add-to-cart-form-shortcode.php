@@ -126,7 +126,7 @@ if ( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 
 		ob_start();
 
-		global $wp_query;
+		global $wp_query, $previous_wp_query;
 
 		// Backup query object so following loops think this is a product page.
 		$previous_wp_query = $wp_query;
@@ -156,6 +156,7 @@ if ( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 		// Restore $previous_wp_query and reset post data.
 		// @codingStandardsIgnoreStart
 		$wp_query = $previous_wp_query;
+		$previous_wp_query = null;
 		// @codingStandardsIgnoreEnd
 		wp_reset_postdata();
 
