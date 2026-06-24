@@ -105,7 +105,7 @@ if ( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 		// Change form action to avoid redirect.
 		if ( 'false' === $atts[ 'allow_form_action' ] ) {
 			add_filter( 'woocommerce_add_to_cart_form_action', '__return_empty_string' );
-		}	
+		}   
 
 		$single_product = new WP_Query( $query_args );
 
@@ -191,7 +191,7 @@ if ( ! function_exists( 'kia_add_to_cart_form_shortcode' ) ) {
 
 		if ( 'false' === $atts[ 'allow_form_action' ] ) {
 			remove_filter( 'woocommerce_add_to_cart_form_action', '__return_empty_string' );
-		}	
+		}   
 
 		return '<div class="woocommerce">' . ob_get_clean() . '</div>';
 	}
